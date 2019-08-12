@@ -8,7 +8,7 @@
   the Arduino Uno.
   
   This script:
-    - Initializes the software serial interface on the pins 6 (RX) and 7 (TX).
+    - Initializes the software serial interface on the pins 6 (TX) and 7 (RX).
     - Reads the local device ID to check if it is a master or slave.
     - If it is a master:
       - Waits for messages from slaves and shows the payload on the monitor.
