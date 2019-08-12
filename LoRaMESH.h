@@ -202,7 +202,7 @@ MeshStatus_Typedef GpioRead(uint16_t id, GPIO_Typedef pin, uint16_t* value);
 MeshStatus_Typedef LocalRead(uint16_t* id, uint16_t* net, uint32_t* uniqueId);
 
 
-MeshStatus_Typedef WriteConfig(uint16_t id, uint16_t net, uint32_t uniqueId){
+MeshStatus_Typedef WriteConfig(uint16_t id, uint16_t net, uint32_t uniqueId);
 
 
 /**
