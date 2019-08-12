@@ -103,9 +103,9 @@ SoftwareSerial* SerialTranspInit(uint8_t rxPin, uint8_t txPin, uint32_t baudRate
   * @param payloadSize: payload size
   * @retval MESH_OK or MESH_ERROR
   */
-MeshStatus_Typedef PrepareFrameCommand(uint16_t id, uint8_t command, uint8_t* payload, uint8_t payloadSize);
+MeshStatus_Typedef PrepareFrameCommand(uint16_t id, uint8_t command, uint8_t* payload, uint8_t payloadSize, uint8_t unic_id);
 
-
+MeshStatus_Typedef PrepareFrameCommandWrite(uint16_t id, uint16_t net, uint32_t uniqueId);
 
 
 /**
@@ -200,6 +200,9 @@ MeshStatus_Typedef GpioRead(uint16_t id, GPIO_Typedef pin, uint16_t* value);
   * @retval MESH_OK or MESH_ERROR
   */
 MeshStatus_Typedef LocalRead(uint16_t* id, uint16_t* net, uint32_t* uniqueId);
+
+
+MeshStatus_Typedef WriteConfig(uint16_t id, uint16_t net, uint32_t uniqueId){
 
 
 /**
