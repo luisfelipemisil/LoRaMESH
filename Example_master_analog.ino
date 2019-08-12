@@ -9,7 +9,7 @@
   It is configured as Master.
   
   This script:
-    - Initializes the software serial interface on the pins 6 (RX) and 7 (TX).
+    - Initializes the software serial interface on the pins 6 (TX) and 7 (RX).
     - Configures the GPIOs 5 and 6 of a remote device as analog inputs.
     - Sends requests for analog values periodically every 2 s.
     - Shows the analog values on the monitor.
