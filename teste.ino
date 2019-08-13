@@ -53,6 +53,8 @@ uint16_t AdcIn;
 /* SoftwareSerial handles */
 SoftwareSerial* hSerialCommands = NULL;
 
+SoftwareSerial* hSerialTransps = NULL;
+
 /* Initialization routine */
 void setup() {
   delay(1000);
@@ -60,6 +62,8 @@ void setup() {
   
   /* Initialize SoftwareSerial */
   hSerialCommands = SerialCommandsInit(7, 6, 9600);
+
+  hSerialTransps = SerialTranspInit(8,9, 9600);
 
   /* Gets the local device ID */
   if(LocalRead(&localId, &localNet, &localUniqueId) != MESH_OK)
@@ -73,9 +77,27 @@ void setup() {
     Serial.print("Local Unique ID: ");
     Serial.println(localUniqueId, HEX);
     Serial.print("\n");
-
-    WriteConfig(1, 9,localUniqueId);
   }
+
+  /*
+  if(WriteConfig(1, 9,localUniqueId) != MESH_OK){
+    Serial.print("Erro ao configurar");
+  }
+  */
+
+  bufferPayload[0] = 26;
+  bufferPayload[1] = 1;
+
+  if(hSerialTransp == NULL) return MESH_ERROR;
+  
+  if(PrepareFrameTransp(2, bufferPayload, 2) != MESH_OK){
+    Serial.print("Erro ao preparar playload transparente");
+  }
+
+  if(SendPacket() != MESH_OK){
+    Serial.print("Erro ao enviar.");
+  }
+
 }
 
 /* Main loop */
