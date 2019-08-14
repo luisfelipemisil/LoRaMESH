@@ -9,8 +9,7 @@
 #include "LMESH.h"
 
 /* Frame type */
-typedef struct
-{
+typedef struct{
   uint8_t buffer[MAX_BUFFER_SIZE];
   uint8_t size;
   bool command;
@@ -29,15 +28,12 @@ static uint32_t deviceUniqueId = -1;
 
 /* ----- Private Functions ----- */
 
-void SerialFlush(SoftwareSerial* hSerial)
-{
+void SerialFlush(SoftwareSerial* hSerial){
   while(hSerial->available() > 0)
   {
     hSerial->read();
   }
 }
-
-
 
 /**
   * @brief Private function - Gets the ID, NET and UNIQUE ID info from the local or remote device
@@ -47,8 +43,7 @@ void SerialFlush(SoftwareSerial* hSerial)
   * @param uniqueId[out]: Device Unique ID 
   * @retval MESH_OK or MESH_ERROR
   */
-MeshStatus_Typedef LocalRemoteRead(uint16_t idIn, uint16_t* idOut, uint16_t* net, uint32_t* uniqueId)
-{
+MeshStatus_Typedef LocalRemoteRead(uint16_t idIn, uint16_t* idOut, uint16_t* net, uint32_t* uniqueId){
   uint8_t crc = 0;
   uint8_t bufferPayload[31];
   uint8_t payloadSize;
@@ -105,15 +100,9 @@ MeshStatus_Typedef LocalRemoteRead(uint16_t idIn, uint16_t* idOut, uint16_t* net
   return MESH_OK; 
 }
 
-
-
-
 /* ----- Public Function Definitions ----- */
 
-
-
-SoftwareSerial* SerialCommandsInit(uint8_t rxPin, uint8_t txPin, uint32_t baudRate)
-{
+SoftwareSerial* SerialCommandsInit(uint8_t rxPin, uint8_t txPin, uint32_t baudRate){
   /* filter not used baudrates */
   
   static SoftwareSerial radioSerialCommands(rxPin, txPin);
@@ -126,10 +115,7 @@ SoftwareSerial* SerialCommandsInit(uint8_t rxPin, uint8_t txPin, uint32_t baudRa
   return &radioSerialCommands;
 }
 
-
-
-SoftwareSerial* SerialTranspInit(uint8_t rxPin, uint8_t txPin, uint32_t baudRate)
-{
+SoftwareSerial* SerialTranspInit(uint8_t rxPin, uint8_t txPin, uint32_t baudRate){
   /* filter not used baudrates */
   
   static SoftwareSerial radioSerialTransp(rxPin, txPin);
@@ -221,8 +207,7 @@ MeshStatus_Typedef WriteConfig(uint16_t id, uint16_t n_net, uint32_t uniqueId){
   return MESH_OK; 
 }
 
-MeshStatus_Typedef PrepareFrameCommand(uint16_t id, uint8_t command, uint8_t* payload, uint8_t payloadSize)
-{
+MeshStatus_Typedef PrepareFrameCommand(uint16_t id, uint8_t command, uint8_t* payload, uint8_t payloadSize){
   if(payload == NULL) return MESH_ERROR;
   if(id > 1023) return MESH_ERROR;
 
@@ -259,11 +244,7 @@ MeshStatus_Typedef PrepareFrameCommand(uint16_t id, uint8_t command, uint8_t* pa
   return MESH_OK;
 }
 
-
-
-
-MeshStatus_Typedef PrepareFrameTransp(uint16_t id, uint8_t* payload, uint8_t payloadSize)
-{
+MeshStatus_Typedef PrepareFrameTransp(uint16_t id, uint8_t* payload, uint8_t payloadSize){
   uint8_t i = 0;
 
   if(payload == NULL) return MESH_ERROR;
@@ -299,11 +280,7 @@ MeshStatus_Typedef PrepareFrameTransp(uint16_t id, uint8_t* payload, uint8_t pay
   return MESH_OK;
 }
 
-
-
-
-MeshStatus_Typedef SendPacket()
-{
+MeshStatus_Typedef SendPacket(){
   if(frame.size == 0) return MESH_ERROR;
   if((hSerialCommand == NULL) && (frame.command)) return MESH_ERROR;
   if((hSerialTransp == NULL) && !(frame.command)) return MESH_ERROR;
@@ -320,11 +297,7 @@ MeshStatus_Typedef SendPacket()
   return MESH_OK;
 }
 
-
-
-
-MeshStatus_Typedef ReceivePacketCommand(uint16_t* id, uint8_t* command, uint8_t* payload, uint8_t* payloadSize, uint32_t timeout)
-{
+MeshStatus_Typedef ReceivePacketCommand(uint16_t* id, uint8_t* command, uint8_t* payload, uint8_t* payloadSize, uint32_t timeout){
   uint16_t waitNextByte = 500;
   uint8_t i = 0;
   uint16_t crc = 0;
@@ -374,11 +347,7 @@ MeshStatus_Typedef ReceivePacketCommand(uint16_t* id, uint8_t* command, uint8_t*
   return MESH_OK;
 }
 
-
-
-
-MeshStatus_Typedef ReceivePacketTransp(uint16_t* id, uint8_t* payload, uint8_t* payloadSize, uint32_t timeout)
-{
+MeshStatus_Typedef ReceivePacketTransp(uint16_t* id, uint8_t* payload, uint8_t* payloadSize, uint32_t timeout){
   uint16_t waitNextByte = 500;
   uint8_t i = 0;
   
@@ -392,8 +361,7 @@ MeshStatus_Typedef ReceivePacketTransp(uint16_t* id, uint8_t* payload, uint8_t* 
   if(!hSerialTransp->isListening()) hSerialTransp->listen();
   
   /* Waits for reception */
-  while( ((timeout > 0 ) || (i > 0)) && (waitNextByte > 0) )
-  {
+  while( ((timeout > 0 ) || (i > 0)) && (waitNextByte > 0) ){
     if(hSerialTransp->available() > 0)
     {
       frame.buffer[i++] = hSerialTransp->read();
@@ -411,17 +379,16 @@ MeshStatus_Typedef ReceivePacketTransp(uint16_t* id, uint8_t* payload, uint8_t* 
   /* In case it didn't get any data */
   if((timeout == 0) && (i == 0)) return MESH_ERROR;
 
-  if(deviceId == 0)
-  {
+  if(deviceId == 0){
     /* Copies ID */
     *id = (uint16_t)frame.buffer[0] | ((uint16_t)frame.buffer[1] << 8);
+
     /* Copies payload size */
     *payloadSize = i-2;
     /* Copies payload */
-    memcpy(payload, &frame.buffer[3], i-2);
+    memcpy(payload, &frame.buffer[2], i-2);
   }
-  else
-  {
+  else{
     /* Copies payload size */
     *payloadSize = i;
     /* Copies payload */
@@ -431,11 +398,7 @@ MeshStatus_Typedef ReceivePacketTransp(uint16_t* id, uint8_t* payload, uint8_t* 
   return MESH_OK;
 }
 
-
-
-
-MeshStatus_Typedef GpioConfig(uint16_t id, GPIO_Typedef pin, Mode_Typedef mode, Pull_Typedef pull)
-{
+MeshStatus_Typedef GpioConfig(uint16_t id, GPIO_Typedef pin, Mode_Typedef mode, Pull_Typedef pull){
   uint16_t crc = 0;
   uint8_t bufferPayload[10];
   uint8_t payloadSize;
@@ -480,10 +443,7 @@ MeshStatus_Typedef GpioConfig(uint16_t id, GPIO_Typedef pin, Mode_Typedef mode, 
   return MESH_OK;
 }
 
-
-
-MeshStatus_Typedef GpioWrite(uint16_t id, GPIO_Typedef pin, uint8_t value)
-{
+MeshStatus_Typedef GpioWrite(uint16_t id, GPIO_Typedef pin, uint8_t value){
   uint16_t crc = 0;
   uint8_t bufferPayload[10];
   uint8_t payloadSize;
@@ -526,10 +486,7 @@ MeshStatus_Typedef GpioWrite(uint16_t id, GPIO_Typedef pin, uint8_t value)
   return MESH_OK;
 }
 
-
-
-MeshStatus_Typedef GpioRead(uint16_t id, GPIO_Typedef pin, uint16_t* value)
-{
+MeshStatus_Typedef GpioRead(uint16_t id, GPIO_Typedef pin, uint16_t* value){
   uint8_t crc = 0;
   uint8_t bufferPayload[10];
   uint8_t payloadSize;
@@ -576,25 +533,28 @@ MeshStatus_Typedef GpioRead(uint16_t id, GPIO_Typedef pin, uint16_t* value)
   return MESH_OK;
 }
 
+MeshStatus_Typedef LocalRead(uint16_t* id, uint16_t* net, uint32_t* uniqueId){
 
-
-MeshStatus_Typedef LocalRead(uint16_t* id, uint16_t* net, uint32_t* uniqueId)
-{
   return LocalRemoteRead(0xFFFF, id, net, uniqueId);
 }
 
-
-
-MeshStatus_Typedef RemoteRead(uint16_t id, uint16_t* net, uint32_t* uniqueId)
-{
+MeshStatus_Typedef RemoteRead(uint16_t id, uint16_t* net, uint32_t* uniqueId){
+ 
   return LocalRemoteRead(id, NULL, net, uniqueId);
 }
 
+MeshStatus_Typedef SendTransp(uint16_t id, uint8_t *payload, uint8_t payloadSize){
+  if(payload == NULL)
+    return MESH_ERROR;
 
+  if(PrepareFrameTransp(id, &payload[0], payloadSize) != MESH_OK)  return MESH_ERROR;
 
+  if(SendPacket() != MESH_OK)  return MESH_ERROR;
 
-uint16_t ComputeCRC(uint8_t* data_in, uint16_t length)
-{
+  return MESH_OK;
+}
+
+uint16_t ComputeCRC(uint8_t* data_in, uint16_t length){
   uint16_t i;
   uint8_t bitbang, j;
   uint16_t crc_calc;

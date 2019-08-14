@@ -19,8 +19,7 @@
 #define MAX_BUFFER_SIZE 237
 
 /* -----  Default Comands List ----- */
-typedef enum
-{
+typedef enum{
   CMD_LORAPARAMETER   = 0xD6,   /* Gets or Sets the LoRa modulation parameters */
   CMD_LOCALREAD       = 0xE2,   /* Gets the ID, NET and UNIQUE ID info from the local device */
   CMD_REMOTEREAD      = 0xD4,   /* Gets the ID, NET and UNIQUE ID info from a remote device */
@@ -35,8 +34,7 @@ typedef enum
 
 
 /* GPIO Enum */
-typedef enum
-{
+typedef enum{
   GPIO0,
   GPIO1,
   GPIO2,
@@ -48,23 +46,20 @@ typedef enum
 } GPIO_Typedef;
 
 /* GPIO mode enum */
-typedef enum
-{
+typedef enum{
   DIGITAL_IN,
   DIGITAL_OUT,
   ANALOG_IN = 3
 } Mode_Typedef;
 
 /* Pull resistor enum */
-typedef enum
-{
+typedef enum{
   PULL_OFF,
   PULLUP,
   PULLDOWN
 } Pull_Typedef;
 
-typedef enum
-{
+typedef enum{
   MESH_OK,
   MESH_ERROR
 } MeshStatus_Typedef;
@@ -121,6 +116,11 @@ MeshStatus_Typedef PrepareFrameCommandWrite(uint16_t id, uint16_t n_net, uint32_
 
 MeshStatus_Typedef WriteConfig(uint16_t id, uint16_t n_net, uint32_t uniqueId);
 
+MeshStatus_Typedef readNoise (uint16_t id);
+
+MeshStatus_Typedef diagnosis (uint16_t id);
+
+MeshStatus_Typedef readRSSI (uint16_t id);
 
 /**
   * @brief Sends a frame previously prepared by PrepareFrame
