@@ -59,9 +59,9 @@ SoftwareSerial* hSerialTransps = NULL;
 void setup() {
   delay(1000);
   Serial.begin(9600); /* Initialize monitor serial */
-  
+  Serial1.begin(9600);
   /* Initialize SoftwareSerial */
-  hSerialCommands = SerialCommandsInit(7, 6, 9600);
+  //hSerialCommands = SerialCommandsInit(7, 6, 9600);
 
   hSerialTransps = SerialTranspInit(8,9, 9600);
 
