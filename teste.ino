@@ -34,7 +34,7 @@ uint8_t payloadSize = 0;
 uint16_t localId;
 
 /* Remote device ID */
-uint16_t remoteId;
+uint16_t remoteId = 1;
 
 /* Local device Unique ID */
 uint32_t localUniqueId;
@@ -51,51 +51,28 @@ bool isMaster;
 uint16_t AdcIn;
 
 /* SoftwareSerial handles */
-SoftwareSerial* hSerialCommands = NULL;
-
-SoftwareSerial* hSerialTransps = NULL;
+//SoftwareSerial* hSerialCommands = NULL;
 
 /* Initialization routine */
 void setup() {
   delay(1000);
-  Serial.begin(9600); /* Initialize monitor serial */
-  Serial1.begin(9600);
-  /* Initialize SoftwareSerial */
-  //hSerialCommands = SerialCommandsInit(7, 6, 9600);
+  Serial1.begin(9600); /* Initialize monitor serial */
+  SerialTranspInit(9600);
 
-  hSerialTransps = SerialTranspInit(8,9, 9600);
-
-  /* Gets the local device ID */
-  if(LocalRead(&localId, &localNet, &localUniqueId) != MESH_OK)
-    Serial.print("Couldn't read local ID\n\n");
-  else
-  {
-    Serial.print("Local ID: ");
-    Serial.println(localId);
-    Serial.print("Local NET: ");
-    Serial.println(localNet);
-    Serial.print("Local Unique ID: ");
-    Serial.println(localUniqueId, HEX);
-    Serial.print("\n");
-  }
-
-  /*
-  if(WriteConfig(1, 9,localUniqueId) != MESH_OK){
-    Serial.print("Erro ao configurar");
-  }
-  */
 
   bufferPayload[0] = 26;
   bufferPayload[1] = 1;
 
-  if(hSerialTransp == NULL) return MESH_ERROR;
   
   if(PrepareFrameTransp(2, bufferPayload, 2) != MESH_OK){
-    Serial.print("Erro ao preparar playload transparente");
+    Serial1.print("Erro ao preparar playload transparente");
   }
 
   if(SendPacket() != MESH_OK){
-    Serial.print("Erro ao enviar.");
+    Serial1.print("Erro ao enviar.");
+  }
+  else{
+    Serial1.print("mandei");
   }
 
 }
@@ -103,5 +80,21 @@ void setup() {
 /* Main loop */
 void loop() {
 
+  if(ReceivePacketTransp(&remoteId, bufferPayload, &payloadSize, 5000) == MESH_OK){
+      
+      Serial1.print("\nID: ");
+      Serial1.print(remoteId);
+      Serial1.print("\ndados: ");
+      Serial1.println(bufferPayload[0]);
+      Serial1.print(bufferPayload[1]);
+      Serial1.print("V\n");
+
+      /* Replies the message - ACK*/
+      bufferPayload[0] = 0;
+      bufferPayload[1] = 0;
+
+      PrepareFrameTransp(remoteId,bufferPayload, 2);  // Payload size = 2
+      SendPacket();
+    }
   
 }
