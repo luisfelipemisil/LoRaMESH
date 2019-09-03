@@ -179,13 +179,13 @@ MeshStatus_Typedef WriteConfig(uint16_t id, uint16_t n_net, uint32_t uniqueId){
 
   /* Waits for response */
   if( ReceivePacketCommand(&idOut, &command, &bufferPayload[0], &payloadSize, 5000) != MESH_OK){
-    Serial.print("Erro 0");
+    Serial1.print("Erro 0");
     return MESH_ERROR;
   }
   
   /* Checks command */
   if(command != CMD_WRITECONFIG){
-    Serial.print("Erro 1");
+    Serial1.print("Erro 1");
     return MESH_ERROR;
   }
   
@@ -193,11 +193,11 @@ MeshStatus_Typedef WriteConfig(uint16_t id, uint16_t n_net, uint32_t uniqueId){
   if(idOut != NULL) /* Local read */
   {
     deviceId = idOut;
-    Serial.println("New ID :" + String(idOut));
+    Serial1.println("New ID :" + String(idOut));
   }
   else {
-    Serial.print(String(idOut));
-    Serial.print("Erro 2");
+    Serial1.print(String(idOut));
+    Serial1.print("Erro 2");
   }
 
   return MESH_OK; 
@@ -282,17 +282,16 @@ MeshStatus_Typedef SendPacket(){
   //if((hSerialCommand == NULL) && (frame.command)) return MESH_ERROR;
   Serial1.print(frame.command);
   Serial1.print("b");
-  if(frame.command)
-  {
+  if(frame.command){
     hSerialCommand->write(frame.buffer, frame.size);
   }
-  else
-  {
+  else{
     Serial.write(frame.buffer, frame.size);
   }
 
   return MESH_OK;
 }
+  if((id == NULL) && (deviceId == 0)) return MESH_ERROR;
 
 MeshStatus_Typedef ReceivePacketCommand(uint16_t* id, uint8_t* command, uint8_t* payload, uint8_t* payloadSize, uint32_t timeout){
   uint16_t waitNextByte = 500;

@@ -1,23 +1,6 @@
 // LoRaMESH_Radioenge - Version: Latest 
 #include <LMESH.h>
 
-/*
-  Radioenge Equipamentos de Telecomunicações
-  
-  Application example using the EndDevice LoRaMESH Radioenge together with
-  the Arduino Uno.
-  
-  This script:
-    - Initializes the software serial interface on the pins 6 (RX) and 7 (TX).
-    - Reads the local device ID to check if it is a master or slave.
-    - If it is a master:
-      - Waits for messages from slaves and shows the payload on the monitor.
-      - Replies each message with an acknowledge.
-    - If it is a slave:
-      - Configures the GPIO 5 as analog input.
-      - Reads the analog inputs and sends to the master periodically.
-*/
-
 /* Includes ---------------------- */
 #include <SoftwareSerial.h>
 #include <stdint.h>
@@ -31,10 +14,10 @@ uint8_t bufferPayload[MAX_PAYLOAD_SIZE] = {0};
 uint8_t payloadSize = 0;
 
 /* Local device ID */
-uint16_t localId;
+uint16_t localId =1 ;
 
 /* Remote device ID */
-uint16_t remoteId = 1;
+uint16_t remoteId;
 
 /* Local device Unique ID */
 uint32_t localUniqueId;
